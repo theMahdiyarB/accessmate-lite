@@ -40,7 +40,7 @@ accessmate-lite/
    Replace:
 
 ```js
-const GEMINI_KEY = "YOUR_REAL_KEY_HERE";
+const GEMINI_KEY = "YOUR_REAL_GEMINI_KEY";
 ```
 
 3. **Load the extension**
