@@ -1,5 +1,5 @@
 /************ CONFIG *****************/
-const GEMINI_KEY      = "REMOVED_API_KEY";
+const GEMINI_KEY      = "YOUR_REAL_GEMINI_KEY";         // get it from https://aistudio.google.com/apikey
 const SUMMARY_MODEL   = "gemini-2.5-flash-lite";        // or any text model you prefer
 const TTS_MODEL       = "gemini-2.5-flash-preview-tts"; // single-speaker TTS
 const VOICE_NAME      = "Kore";                         // other demo voices: Puck, Wren …
