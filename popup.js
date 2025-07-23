@@ -2,7 +2,7 @@
 /************ CONFIG *****************/
 const GEMINI_KEY      = "YOUR_REAL_GEMINI_KEY";         // get it from https://aistudio.google.com/apikey
 
-// Model selectors (populated at runtime)
+// Model selectors (populated at runtime) 
 let SUMMARY_MODEL = localStorage.getItem('SUMMARY_MODEL') || "gemini-2.5-flash-lite";
 let TTS_MODEL = localStorage.getItem('TTS_MODEL') || "gemini-2.5-flash-preview-tts";
 
