@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "AccessMate Lite",
+  "description": "Summarise selected text with Gemini Flash and read it aloud.",
+  "version": "0.2",
+  "icons": { "128": "icon128.png" },
+
+  "action": { "default_popup": "popup.html" },
+
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": [
+    "<all_urls>",
+    "https://generativelanguage.googleapis.com/*"
+  ]
+
+}
