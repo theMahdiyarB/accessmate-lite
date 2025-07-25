@@ -1,5 +1,5 @@
 const fs = require('fs');
-const path = 'accessmate-lite/manifest.json';
+const path = 'manifest.json';
 
 const json = JSON.parse(fs.readFileSync(path, 'utf-8'));
 let [maj, min, patch] = json.version.split('.').map(Number);
