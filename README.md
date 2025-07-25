@@ -145,5 +145,4 @@ You can bind a custom shortcut:
 
 ---
 
-### ⭐ Give it a try, fork it, and help build a more accessible web!
-```
+### ⭐ Give it a try, fork it, and help build a more accessible web!s
