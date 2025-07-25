@@ -1,130 +1,127 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>AccessMate Lite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts: Material uses Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --md-sys-color-primary: #6750a4;
-      --md-sys-color-on-primary: #fff;
-      --md-sys-color-surface: #f5f5f5;
-      --md-sys-color-on-surface: #1c1b1f;
-      --md-sys-color-outline: #79747e;
-      --md-sys-color-secondary: #625b71;
-      --md-sys-color-background: #fff;
-      --md-sys-elevation-1: 0 1px 2px rgba(0,0,0,0.08);
+      --primary: #1a73e8;
+      --surface: #fff;
+      --surface-variant: #f1f3f4;
+      --outline: #d2dce6;
+      --on-surface: #202124;
+      --shadow: 0 4px 18px 0 #191c201a;
+      --border-radius: 13px;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --md-sys-color-primary: #d0bcff;
-        --md-sys-color-on-primary: #381e72;
-        --md-sys-color-surface: #1c1b1f;
-        --md-sys-color-on-surface: #e6e1e5;
-        --md-sys-color-outline: #938f99;
-        --md-sys-color-secondary: #ccc2dc;
-        --md-sys-color-background: #121212;
-        --md-sys-elevation-1: 0 1px 2px rgba(0,0,0,0.32);
+        --primary: #8ab4f8;
+        --surface: #181c20;
+        --surface-variant: #23272c;
+        --outline: #344056;
+        --on-surface: #f3f4f8;
+        --shadow: 0 4px 18px 0 #0a0c1180;
       }
     }
-    body {
-      font-family: "Google Sans", Roboto, Arial, sans-serif;
+    html, body {
+      background: var(--surface-variant);
+      font-family: 'Roboto', Arial, sans-serif;
+      color: var(--on-surface);
       margin: 0;
-      padding: 1rem;
-      width: 320px;
-      background: var(--md-sys-color-background);
-      color: var(--md-sys-color-on-surface);
-      transition: background 0.2s, color 0.2s;
+      min-width: 260px;
+      max-width: 340px;
     }
-    h3 {
-      font-weight: 700;
-      letter-spacing: .01em;
-      margin-bottom: 1.2rem;
-      color: var(--md-sys-color-primary);
-    }
-    button {
-      padding: .7rem 1.2rem;
-      font-size: 1rem;
-      width: 100%;
-      border: none;
-      border-radius: 0.7em;
-      background: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      margin: 4px 0;
-      box-shadow: var(--md-sys-elevation-1);
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-    button:active {
-      background: var(--md-sys-color-secondary);
-    }
-    button:focus {
-      outline: 2px solid var(--md-sys-color-outline);
-      outline-offset: 2px;
-    }
-    hr {
-      border: none;
-      border-top: 1.5px solid var(--md-sys-color-outline);
-      margin: 1.2rem 0 1rem 0;
-    }
-    #modelVoiceSelectors {
+    .popup-card {
+      background: var(--surface);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin: 16px 10px 18px 10px;
+      padding: 18px 18px 14px 18px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em 0.7em;
-      margin-bottom: 0.7em;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .popup-header {
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 1.15em;
+      color: var(--primary);
+      letter-spacing: .01em;
+      margin-bottom: 3px;
     }
-    #modelVoiceSelectors label {
-      font-size: .97em;
-      color: var(--md-sys-color-on-surface);
+    .settings-btn {
+      background: none;
+      border: none;
+      font-size: 1.25em;
+      color: var(--primary);
+      cursor: pointer;
+      border-radius: 50%;
+      padding: 5px 7px 5px 7px;
+      transition: background .13s;
+    }
+    .settings-btn:focus, .settings-btn:hover {
+      background: var(--surface-variant);
+    }
+    .popup-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin: 9px 0 0 0;
+    }
+    .main-btn {
+      background: var(--surface-variant);
+      color: var(--primary);
       font-weight: 500;
-      margin-bottom: 0.2em;
-    }
-    #modelVoiceSelectors select {
+      border: 1.5px solid var(--outline);
+      border-radius: var(--border-radius);
+      padding: 13px 6px;
       font-size: 1em;
-      border-radius: 0.5em;
-      border: 1.5px solid var(--md-sys-color-outline);
-      background: var(--md-sys-color-surface);
-      color: var(--md-sys-color-on-surface);
-      padding: 0.3em 0.7em;
-      margin-left: 0.3em;
-      margin-right: 0.7em;
+      cursor: pointer;
+      transition: border-color .15s, background .13s;
+      letter-spacing: .02em;
       outline: none;
-      transition: border 0.2s;
+      margin: 0;
+      box-shadow: 0 1px 3px #0002;
     }
-    #modelVoiceSelectors select:focus {
-      border: 2px solid var(--md-sys-color-primary);
+    .main-btn:active, .main-btn:focus {
+      border-color: var(--primary);
+      background: #e8f0fe;
     }
-    textarea {
-      width: 100%;
-      height: 120px;
-      margin-top: .7rem;
+    .popup-outbox {
+      margin: 15px 0 6px 0;
+      background: var(--surface-variant);
+      border-radius: var(--border-radius);
+      border: 1.3px solid var(--outline);
       font-size: 1em;
-      border-radius: 0.7em;
-      border: 1.5px solid var(--md-sys-color-outline);
-      background: var(--md-sys-color-surface);
-      color: var(--md-sys-color-on-surface);
-      padding: 0.7em;
+      color: var(--on-surface);
+      padding: 9px 7px 8px 10px;
+      min-height: 78px;
+      font-family: inherit;
       resize: vertical;
+      width: 100%;
       box-sizing: border-box;
-      transition: background 0.2s, color 0.2s;
-    }
-    textarea:focus {
-      border: 2px solid var(--md-sys-color-primary);
     }
   </style>
 </head>
-
 <body>
-  <h3>AccessMate Lite</h3>
-  <button id="selSumSpeak">🔹 Summarise & Read Selection</button>
-  <button id="selSpeak">🔹 Read Selection (no summary)</button>
-  <button id="pageSumSpeak">🔸 Summarise & Read Page</button>
-  <button id="pageSpeak">🔸 Read Page (no summary)</button>
-  <textarea id="out" readonly style="width:100%;height:120px;margin-top:6px;font-size:.9rem"
-            placeholder="Output and errors appear here…"></textarea>
-  <a href="#" id="settingsLink">⚙️ Settings</a>
+  <div class="popup-card">
+    <div class="popup-header">
+      <span>AccessMate <b>Lite</b></span>
+      <button class="settings-btn" id="settingsLink" title="Settings" tabindex="0">⚙️</button>
+    </div>
+    <div class="popup-buttons">
+      <button id="selSumSpeak"  class="main-btn">Summarise &amp; Read Selection</button>
+      <button id="selSpeak"     class="main-btn">Read Selection (no summary)</button>
+      <button id="pageSumSpeak" class="main-btn">Summarise &amp; Read Page</button>
+      <button id="pageSpeak"    class="main-btn">Read Page (no summary)</button>
+    </div>
+    <textarea id="out" class="popup-outbox" readonly placeholder="Output and errors appear here…"></textarea>
+  </div>
   <script src="popup.js"></script>
 </body>
-
 </html>
