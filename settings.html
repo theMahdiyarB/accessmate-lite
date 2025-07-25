@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AccessMate Lite – Settings</title>
+  <style>
+    body { font-family: sans-serif; max-width: 360px; margin: 1.5em; }
+    input, select { width: 100%; margin: 4px 0 12px 0; padding: 6px; font-size: 1em; }
+    label { font-weight: bold; margin-top: 1em; display: block; }
+    button { padding: 8px 16px; width: 100%; font-size: 1em; }
+    .note { color: #666; font-size: 0.9em; margin-bottom: 1em; }
+  </style>
+</head>
+<body>
+  <h2>Settings</h2>
+  <form id="settingsForm">
+    <label>API Key
+      <input id="apiKey" type="text" required autocomplete="off" />
+    </label>
+    <span class="note">Get from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.</span>
+
+    <label>Text Model
+      <input id="textModel" type="text" value="gemini-1.5-flash-latest" required />
+    </label>
+
+    <label>TTS Model
+      <input id="ttsModel" type="text" value="gemini-tts-1.0-preview" required />
+    </label>
+
+    <label>Voice Name
+      <input id="voiceName" type="text" value="Kore" required />
+    </label>
+
+    <button type="submit">Save Settings</button>
+    <div id="status" class="note"></div>
+  </form>
+  <script src="settings.js"></script>
+</body>
+</html>

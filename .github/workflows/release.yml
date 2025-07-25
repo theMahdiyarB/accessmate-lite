@@ -1,0 +1,57 @@
+name: Auto-bump & Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]     # PR target
+    paths: ["**/popup.js", "**/manifest.json", "**/*.html"]  # optional
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true &&
+        github.event.pull_request.base.ref == 'main' &&
+        github.event.pull_request.head.ref == 'development'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PAT_PUSH }}
+
+    - name: Read current version
+      id: ver
+      run: |
+        current=$(jq -r '.version' accessmate-lite/manifest.json)
+        echo "current=$current" >> $GITHUB_OUTPUT
+
+    - name: Bump patch version
+      id: bump
+      run: |
+        IFS='.' read -r major minor patch <<< "${{ steps.ver.outputs.current }}"
+        new="$major.$minor.$((patch+1))"
+        jq ".version=\"$new\"" accessmate-lite/manifest.json > tmp && mv tmp accessmate-lite/manifest.json
+        echo "new=$new" >> $GITHUB_OUTPUT
+
+    - name: Commit and tag
+      run: |
+        git config user.email "github-actions@users.noreply.github.com"
+        git config user.name  "github-actions"
+        git add accessmate-lite/manifest.json
+        git commit -m "chore: bump version to ${{ steps.bump.outputs.new }}"
+        git tag -a "v${{ steps.bump.outputs.new }}" -m "Release v${{ steps.bump.outputs.new }}"
+        git push origin main --follow-tags
+
+    - name: Zip extension
+      run: |
+        cd accessmate-lite
+        zip -r "../accessmate-lite-v${{ steps.bump.outputs.new }}.zip" *
+        cd ..
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: "v${{ steps.bump.outputs.new }}"
+        name: "v${{ steps.bump.outputs.new }}"
+        files: "accessmate-lite-v${{ steps.bump.outputs.new }}.zip"
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_PUSH }}

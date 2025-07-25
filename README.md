@@ -92,15 +92,6 @@ You can bind a custom shortcut:
 
 ---
 
-## 📜 Roadmap
-
-- [ ] **Inline balloon UI** (summary appears near selection, no popup).  
-- [ ] **Streaming audio** once Google makes streaming TTS GA.  
-- [ ] **Voice chooser** in popup (dropdown populated from available voices).  
-- [ ] **Safari / Edge** versions (same code, different manifests).  
-
----
-
 ## 🩺 Troubleshooting
 
 | Symptom                                | Likely Cause                                | Fix                                                                       |
