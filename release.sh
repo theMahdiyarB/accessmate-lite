@@ -35,7 +35,24 @@ rm -f "$zipname"
 # Exclude .git and previous release zips and this script itself
 zip -r "$zipname" . -x ".git/*" "*.zip" "release.sh" "bump-version.js"
 
-# 6. Create GitHub Release and upload ZIP (requires gh CLI)
-gh release create "v$ver" "$zipname" --title "v$ver" --notes "Automatic release of version $ver"
+# 6. Extract latest changelog entry for this version
+if [ -f CHANGELOG.md ]; then
+  release_notes=$(awk "/^## v$ver[[:space:]]/{flag=1;next}/^## v/{flag=0}flag" CHANGELOG.md | sed '/^\s*$/d')
+  if [ -z "$release_notes" ]; then
+    release_notes="Automatic release of version $ver
+
+See the full [CHANGELOG.md](https://github.com/theMahdiyarB/accessmate-lite/blob/main/CHANGELOG.md)"
+  fi
+else
+  release_notes="Automatic release of version $ver
+
+See the full [CHANGELOG.md](https://github.com/theMahdiyarB/accessmate-lite/blob/main/CHANGELOG.md)"
+fi
+
+# 7. Create GitHub Release and upload ZIP (requires gh CLI)
+gh release create "v$ver" "$zipname" --title "v$ver" --notes "$release_notes"
 
 echo "✅ Release v$ver published and zip uploaded!"
+
+echo "🔄 Switching back to development branch..."
+git checkout development
