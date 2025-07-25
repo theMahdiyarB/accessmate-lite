@@ -22,12 +22,12 @@ echo "🟡 Bumping version in manifest.json..."
 node bump-version.js
 
 # 4. Commit and push version bump
-git add accessmate-lite/manifest.json
+git add manifest.json
 git commit -m "chore: bump version for release"
 git push origin main
 
 # 5. Get new version string from manifest.json (using Node, no jq required)
-ver=$(node -pe "require('./accessmate-lite/manifest.json').version")
+ver=$(node -pe "require('./manifest.json').version")
 zipname="accessmate-lite-v$ver.zip"
 echo "🟢 Releasing version $ver"
 
