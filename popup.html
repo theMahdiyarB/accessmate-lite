@@ -114,26 +114,16 @@
     }
   </style>
 </head>
-<body style="font-family:sans-serif;margin:0;padding:1rem;width:320px">
+
+<body>
   <h3>AccessMate Lite</h3>
-
-  <!-- Selected-text actions -->
-  <button id="selSumSpeak" style="width:100%;margin:4px 0">🔹 Summarise & Read Selection</button>
-  <button id="selSpeak"     style="width:100%;margin:4px 0">🔹 Read Selection (⁠no summary⁠)</button>
-
-  <hr>
-
-  <!-- Whole-page actions -->
-  <button id="pageSumSpeak" style="width:100%;margin:4px 0">🔸 Summarise & Read Page</button>
-  <button id="pageSpeak"    style="width:100%;margin:4px 0">🔸 Read Page (⁠no summary⁠)</button>
-
-
-  <!-- Model and Voice selectors will be inserted here by JS -->
-  <div id="modelVoiceSelectors"></div>
-
+  <button id="selSumSpeak">🔹 Summarise & Read Selection</button>
+  <button id="selSpeak">🔹 Read Selection (no summary)</button>
+  <button id="pageSumSpeak">🔸 Summarise & Read Page</button>
+  <button id="pageSpeak">🔸 Read Page (no summary)</button>
   <textarea id="out" readonly style="width:100%;height:120px;margin-top:6px;font-size:.9rem"
-            placeholder="Output appears here…"></textarea>
-
+            placeholder="Output and errors appear here…"></textarea>
+  <a href="#" id="settingsLink">⚙️ Settings</a>
   <script src="popup.js"></script>
 </body>
 
