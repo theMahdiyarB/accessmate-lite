@@ -1,3 +1,4 @@
+<!-- AccessMate Lite Settings UI -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Google Fonts (Material uses Roboto) -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Settings Styles: Material 3-inspired -->
   <style>
     :root {
       --primary: #1a73e8;
@@ -136,13 +138,17 @@
   </style>
 </head>
 <body>
+  <!-- Settings form card container -->
   <form class="settings-card" id="settingsForm" autocomplete="off">
+    <!-- Title -->
     <div class="settings-title">AccessMate Lite Settings</div>
+    <!-- API Key input -->
     <label for="apiKey">API Key</label>
     <input type="text" id="apiKey" required placeholder="Paste your Gemini API Key here">
     <div class="note">
       Get from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.
     </div>
+    <!-- Model and voice selectors -->
     <div class="row">
       <div>
         <label for="textModelSelect">Text Model</label>
@@ -157,9 +163,12 @@
         <select id="voiceSelect"></select>
       </div>
     </div>
+    <!-- Save button -->
     <button type="submit">Save Settings</button>
+    <!-- Status message -->
     <div id="status"></div>
   </form>
+  <!-- Settings logic -->
   <script src="settings.js"></script>
 </body>
 </html>

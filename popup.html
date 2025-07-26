@@ -1,3 +1,4 @@
+<!-- AccessMate Lite Popup UI -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Google Fonts: Material uses Roboto -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Popup Styles: Material 3-inspired -->
   <style>
     :root {
       --primary: #1a73e8;
@@ -109,19 +111,25 @@
   </style>
 </head>
 <body>
+  <!-- Main popup card container -->
   <div class="popup-card">
+    <!-- Header: Title and settings button -->
     <div class="popup-header">
       <span>AccessMate <b>Lite</b></span>
+      <!-- Settings button: opens extension options page -->
       <button class="settings-btn" id="settingsLink" title="Settings" tabindex="0">⚙️</button>
     </div>
+    <!-- Action buttons for summarising/reading selection or page -->
     <div class="popup-buttons">
       <button id="selSumSpeak"  class="main-btn">Summarise &amp; Read Selection</button>
       <button id="selSpeak"     class="main-btn">Read Selection (no summary)</button>
       <button id="pageSumSpeak" class="main-btn">Summarise &amp; Read Page</button>
       <button id="pageSpeak"    class="main-btn">Read Page (no summary)</button>
     </div>
+    <!-- Output area for results and errors -->
     <textarea id="out" class="popup-outbox" readonly placeholder="Output and errors appear here…"></textarea>
   </div>
+  <!-- Popup logic -->
   <script src="popup.js"></script>
 </body>
 </html>
