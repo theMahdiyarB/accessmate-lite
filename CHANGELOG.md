@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.3 – 2025-07-26
+- **Maintenance:** Updated the "release.ps1" file for windows PowerShell users.
+- **Maintenance:** Added comprehensive in-line comments and documentations to the files.
+
 ## v0.5.2 – 2025-07-24
 - **Minor Fix:** Corrected a version parsing issue in the release script to ensure proper semantic versioning (no more `0.0.NaN` errors).
 - **Maintenance:** Small cleanup in release and version bump scripts to improve stability for flat directory structure.

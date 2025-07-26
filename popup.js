@@ -1,10 +1,17 @@
+
+// =====================
 // System theme detection for Material
+// =====================
 if (window.matchMedia("(prefers-color-scheme: dark)").matches)
   document.documentElement.setAttribute("data-md-theme", "dark");
 else
   document.documentElement.setAttribute("data-md-theme", "light");
 
-/************ UI and Settings **************/
+// =====================
+// UI and Settings Setup
+// =====================
+
+// Output textarea and action buttons
 const out = document.getElementById("out");
 const btns = [
   document.getElementById("selSumSpeak"),
@@ -12,6 +19,7 @@ const btns = [
   document.getElementById("pageSumSpeak"),
   document.getElementById("pageSpeak"),
 ];
+
 
 // Settings loaded from chrome.storage.sync
 let SETTINGS = {
@@ -21,6 +29,8 @@ let SETTINGS = {
   voiceName: "Kore"
 };
 
+
+// Load settings and enable/disable buttons accordingly
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.sync.get(
     ["apiKey", "textModel", "ttsModel", "voiceName"],
@@ -34,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   );
-  // Settings link
+  // Settings button handler
   const settingsLink = document.getElementById("settingsLink");
   if (settingsLink) {
     settingsLink.onclick = (e) => {
@@ -44,21 +54,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+
+// Enable or disable all action buttons
 function setButtonsEnabled(enable) {
   btns.forEach(b => { if (b) b.disabled = !enable; });
 }
 
-/************ Button handlers **************/
+
+// Button click handlers for summarise/speak actions
 if (btns[0]) btns[0].onclick  = () => run("selection", true);
 if (btns[1]) btns[1].onclick  = () => run("selection", false);
 if (btns[2]) btns[2].onclick  = () => run("page",       true);
 if (btns[3]) btns[3].onclick  = () => run("page",       false);
 
+
+/**
+ * Main action handler for buttons
+ * @param {"selection"|"page"} mode - What to process
+ * @param {boolean} doSummary - Whether to summarise before TTS
+ */
 async function run(mode, doSummary){
   output("Working…");
   setButtonsEnabled(false);
   try{
-    // 1️⃣  Grab text
+    // 1️⃣  Grab text from page or selection
     const raw = await grabText(mode);
     if(!raw){ output(`No text found for ${mode}.`); setButtonsEnabled(true); return; }
     // 2️⃣  Optional summary
@@ -75,8 +94,16 @@ async function run(mode, doSummary){
   }
 }
 
+
+// Output message to textarea
 function output(msg) { out.value = msg; }
 
+
+/**
+ * Get either highlighted text or full page text from the active tab
+ * @param {"selection"|"page"} mode
+ * @returns {Promise<string>}
+ */
 function grabText(mode){
   return new Promise((resolve, reject)=>{
     chrome.tabs.query({active:true,currentWindow:true},([tab])=>{
@@ -91,9 +118,17 @@ function grabText(mode){
     });
   });
 }
+
+// Keep Gemini input small enough for latency/quota
 const MAX_CHARS = 4000;
 const trimInput = txt => txt.length > MAX_CHARS ? txt.slice(0,MAX_CHARS) : txt;
 
+
+/**
+ * Call Gemini API to summarise text
+ * @param {string} text
+ * @returns {Promise<string>}
+ */
 async function geminiSummary(text) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${SETTINGS.textModel}:generateContent?key=${SETTINGS.apiKey}`;
   const body = {
@@ -105,6 +140,12 @@ async function geminiSummary(text) {
   if (j.error) throw new Error(`API error: ${j.error.message}`);
   return j.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
 }
+
+/**
+ * Call Gemini API to generate TTS audio
+ * @param {string} text
+ * @returns {Promise<string>} base64 WAV
+ */
 async function geminiTTS(text) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${SETTINGS.ttsModel}:generateContent?key=${SETTINGS.apiKey}`;
   const body = {
@@ -123,6 +164,13 @@ async function geminiTTS(text) {
   if (!pcmB64) throw new Error("No audio returned");
   return pcmToWavBase64(pcmB64);
 }
+
+/**
+ * Convert Gemini PCM base64 to WAV base64 for playback
+ * @param {string} pcmB64
+ * @param {number} sampleRate
+ * @returns {string} base64 WAV
+ */
 function pcmToWavBase64(pcmB64, sampleRate = 24000) {
   const pcm = atob(pcmB64);
   const pcmLen = pcm.length;
@@ -147,6 +195,8 @@ function pcmToWavBase64(pcmB64, sampleRate = 24000) {
   bytes.forEach(b => bin += String.fromCharCode(b));
   return btoa(bin);
 }
+
+// Play WAV audio from base64 string
 function playWav(wavB64){
   const audio = new Audio(`data:audio/wav;base64,${wavB64}`);
   audio.play();

@@ -1,31 +1,36 @@
-const MODEL_CACHE_KEY = "GeminiModelsCache";
-const MODEL_CACHE_DATE_KEY = "GeminiModelsCacheDate";
-const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
+// --- Constants and Defaults ---
+const MODEL_CACHE_KEY = "GeminiModelsCache"; // Key for cached models
+const MODEL_CACHE_DATE_KEY = "GeminiModelsCacheDate"; // Key for cache date
+const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta"; // Gemini API base URL
 const DEFAULTS = {
-  textModel: "gemini-1.5-flash-latest",
-  ttsModel: "gemini-tts-1.0-preview",
-  voiceName: "Kore"
+  textModel: "gemini-1.5-flash-latest", // Default text model
+  ttsModel: "gemini-tts-1.0-preview",   // Default TTS model
+  voiceName: "Kore"                     // Default voice
 };
 
-const textModelSelect = document.getElementById("textModelSelect");
-const ttsModelSelect  = document.getElementById("ttsModelSelect");
-const voiceSelect     = document.getElementById("voiceSelect");
-const apiKeyField     = document.getElementById("apiKey");
-const statusDiv       = document.getElementById("status");
-const settingsForm    = document.getElementById("settingsForm");
+// --- DOM Elements ---
+const textModelSelect = document.getElementById("textModelSelect"); // Text model selector
+const ttsModelSelect  = document.getElementById("ttsModelSelect");  // TTS model selector
+const voiceSelect     = document.getElementById("voiceSelect");     // Voice selector
+const apiKeyField     = document.getElementById("apiKey");          // API key input
+const statusDiv       = document.getElementById("status");          // Status message div
+const settingsForm    = document.getElementById("settingsForm");    // Settings form
 
+// --- Status Message Helpers ---
 function status(msg, isErr) {
   statusDiv.textContent = msg;
   statusDiv.style.color = isErr ? "#cb2730" : "#29826e";
 }
 function clearStatus() { statusDiv.textContent = ""; }
 
-// Fetch Gemini models, cache daily
+// --- Fetch Gemini models, cache daily ---
+// Returns a list of available Gemini models, caching results for the current day
 async function getModelList(apiKey) {
   return new Promise(async (resolve, reject) => {
     const today = (new Date()).toISOString().slice(0, 10);
     chrome.storage.local.get([MODEL_CACHE_KEY, MODEL_CACHE_DATE_KEY], async (res) => {
       if (res[MODEL_CACHE_KEY] && res[MODEL_CACHE_DATE_KEY] === today) {
+        // Use cached models if available and up-to-date
         resolve(res[MODEL_CACHE_KEY]);
         return;
       }
@@ -35,6 +40,7 @@ async function getModelList(apiKey) {
         const resp = await fetch(url);
         const data = await resp.json();
         if (!data.models) throw new Error(data.error?.message || "No models found");
+        // Cache models and date
         chrome.storage.local.set({ [MODEL_CACHE_KEY]: data.models, [MODEL_CACHE_DATE_KEY]: today });
         resolve(data.models);
       } catch (err) {
@@ -45,24 +51,28 @@ async function getModelList(apiKey) {
   });
 }
 
-// Fill <select> using <option>
+// --- Fill <select> elements with model and voice options ---
+// Populates the selectors for text model, TTS model, and voice
 function fillSelectors(models, selected) {
-  // Text and TTS
+  // Clear previous options
   textModelSelect.innerHTML = "";
   ttsModelSelect.innerHTML  = "";
   let voicesSet = new Set();
 
+  // Populate model selectors
   models.forEach(m => {
     if (m.supportedGenerationMethods?.includes("generateContent")) {
       const value = m.name.split("/").pop();
       const label = m.displayName || value;
       if (!value.includes("tts")) {
+        // Text model option
         const opt = document.createElement('option');
         opt.value = value;
         opt.textContent = label;
         if (value === selected.textModel) opt.selected = true;
         textModelSelect.appendChild(opt);
       } else {
+        // TTS model option
         const opt = document.createElement('option');
         opt.value = value;
         opt.textContent = label;
@@ -70,16 +80,17 @@ function fillSelectors(models, selected) {
         ttsModelSelect.appendChild(opt);
       }
     }
-    // Dynamically collect voices from all TTS models in API response
+    // Collect voices from TTS models in API response
     if (m.supportedCapabilities && Array.isArray(m.supportedCapabilities.ttsVoices)) {
       m.supportedCapabilities.ttsVoices.forEach(v => voicesSet.add(v.voiceName));
     }
   });
 
-  // Fallback to hardcoded voices only if API returned none
+  // Fallback to hardcoded voices if API returned none
   if (voicesSet.size === 0) {
     ["Kore", "Puck", "Wren", "Orion", "Eden", "Nova", "Rhea", "Atlas", "Breeze", "River", "Sage", "Indigo"].forEach(v => voicesSet.add(v));
   }
+  // Populate voice selector
   voiceSelect.innerHTML = "";
   voicesSet.forEach(v => {
     const opt = document.createElement('option');
@@ -89,21 +100,24 @@ function fillSelectors(models, selected) {
     voiceSelect.appendChild(opt);
   });
 
-  // Set values after items are attached
+  // Set selector values after options are attached
   textModelSelect.value = selected.textModel;
   ttsModelSelect.value = selected.ttsModel;
   voiceSelect.value = selected.voiceName;
 }
 
+// --- Load settings from chrome.storage and populate selectors ---
 function loadSettings() {
   chrome.storage.sync.get(
     ["apiKey", "textModel", "ttsModel", "voiceName"],
     (items) => {
+      // Fill fields with saved or default values
       if (items.apiKey) apiKeyField.value = items.apiKey;
       items.textModel  = items.textModel || DEFAULTS.textModel;
       items.ttsModel   = items.ttsModel || DEFAULTS.ttsModel;
       items.voiceName  = items.voiceName || DEFAULTS.voiceName;
 
+      // Fetch models and fill selectors if API key is present
       if (items.apiKey) {
         getModelList(items.apiKey)
           .then(models => fillSelectors(models, items))
@@ -113,10 +127,11 @@ function loadSettings() {
   );
 }
 
-// Re-fetch if API key changes
+// --- Re-fetch models if API key changes ---
 apiKeyField.addEventListener("change", async e => {
   const key = apiKeyField.value.trim();
   if (!key) return;
+  // Clear model cache and fetch fresh list
   chrome.storage.local.remove([MODEL_CACHE_KEY, MODEL_CACHE_DATE_KEY], () => {
     getModelList(key)
       .then(models => {
@@ -129,6 +144,7 @@ apiKeyField.addEventListener("change", async e => {
   });
 });
 
+// --- Save settings on form submit ---
 settingsForm.onsubmit = function (e) {
   e.preventDefault();
   chrome.storage.sync.set({
@@ -142,4 +158,5 @@ settingsForm.onsubmit = function (e) {
   });
 };
 
+// --- Initialize settings UI on page load ---
 document.addEventListener("DOMContentLoaded", loadSettings);
