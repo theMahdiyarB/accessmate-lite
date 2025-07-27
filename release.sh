@@ -33,7 +33,7 @@ echo "🟢 Releasing version $ver"
 
 rm -f "$zipname"
 # Exclude .git and previous release zips and this script itself
-zip -r "$zipname" . -x ".git/*" "*.zip" "release.sh" "bump-version.js"
+zip "$zipname" manifest.json popup.html popup.js settings.html settings.js icon128.png
 
 # 6. Extract latest changelog entry for this version
 if [ -f CHANGELOG.md ]; then
